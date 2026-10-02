@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NutriLog — Food & Macro Tracker</title>
+<style>
+:root{color-scheme:light dark;--bg:#f5f6f1;--surface:#fff;--surface2:#eef1e9;--text:#1e2822;--muted:#68736c;--border:#dfe5dc;--accent:#52735b;--accent2:#d5e4d5;--gold:#c9943c;--danger:#b4544d;--shadow:0 12px 30px rgba(35,50,40,.08)}
+@media(prefers-color-scheme:dark){:root{--bg:#101512;--surface:#18201b;--surface2:#202a23;--text:#edf4ee;--muted:#aab7ae;--border:#344039;--accent:#9ac4a0;--accent2:#294132;--gold:#e0b15e;--danger:#e7897e;--shadow:0 12px 30px rgba(0,0,0,.25)}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}button,input,select{font:inherit}button{cursor:pointer}.app{min-height:100vh;background:var(--bg)}.wrap{max-width:1180px;margin:auto;padding:28px 18px 48px}
+header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,var(--accent),#9bbd8e);display:grid;place-items:center;color:white;font-size:24px;box-shadow:var(--shadow)}h1{font-size:25px;margin:0} .sub{color:var(--muted);font-size:13px;margin-top:3px}.date-pill{background:var(--surface);border:1px solid var(--border);padding:9px 12px;border-radius:12px;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:1.45fr .85fr;gap:18px}.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);padding:18px}.card h2{font-size:17px;margin:0 0 14px}.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-bottom:18px}.stat{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:12px}.stat .num{font-size:20px;font-weight:750}.stat .lbl{font-size:11px;color:var(--muted);margin-top:2px}.stat.cal{background:var(--accent2);border-color:transparent}
+.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:13px}.tab{border:1px solid var(--border);background:var(--surface);padding:9px 13px;border-radius:999px;color:var(--muted);white-space:nowrap}.tab.active{background:var(--accent);color:white;border-color:var(--accent)}
+.form{display:grid;grid-template-columns:1.5fr .8fr .7fr;gap:9px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:11px;color:var(--muted);font-weight:650}.field input,.field select{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:11px;padding:10px 11px;outline:none}.field input:focus,.field select:focus{border-color:var(--accent)}.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.btn{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:9px 13px;border-radius:11px;font-weight:650}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.ghost{background:var(--surface2)}.btn.danger{color:var(--danger)}
+.food-suggest{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.chip{font-size:11px;padding:7px 9px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--text)}.chip:hover{border-color:var(--accent)}
+.meal-block{margin-top:18px}.meal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.meal-head h3{font-size:14px;margin:0}.meal-total{font-size:11px;color:var(--muted)}.entry{display:grid;grid-template-columns:1fr auto;gap:10px;padding:11px 0;border-top:1px solid var(--border)}.entry-title{font-weight:650;font-size:13px}.entry-meta{font-size:11px;color:var(--muted);margin-top:3px}.macroline{font-size:11px;color:var(--muted);margin-top:4px}.remove{border:0;background:transparent;color:var(--muted);font-size:16px}.side-stack{display:flex;flex-direction:column;gap:18px}.ring{display:grid;grid-template-columns:115px 1fr;align-items:center;gap:16px}.circle{width:112px;height:112px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--pct)*1%),var(--surface2) 0);display:grid;place-items:center}.circle:after{content:"";width:82px;height:82px;border-radius:50%;background:var(--surface);position:absolute}.circle-inner{position:relative;text-align:center;z-index:1}.circle-inner b{font-size:20px;display:block}.circle-inner span{font-size:10px;color:var(--muted)}.goal-row{display:flex;justify-content:space-between;font-size:12px;padding:7px 0;border-bottom:1px solid var(--border)}.goal-row:last-child{border:0}.progress{height:7px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-top:5px}.progress i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px}.quick button{text-align:left}.quick strong{display:block;font-size:12px}.quick span{display:block;color:var(--muted);font-size:10px;margin-top:2px}.save-list{display:flex;flex-direction:column;gap:8px}.saved{border:1px solid var(--border);border-radius:13px;padding:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}.saved b{font-size:12px}.saved small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.tiny-actions{display:flex;gap:4px}.tiny{border:1px solid var(--border);background:var(--surface2);border-radius:8px;padding:5px 7px;font-size:10px;color:var(--text)}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:8px}.check{border:1px solid var(--border);border-radius:13px;padding:10px;display:flex;align-items:center;gap:9px}.check input{accent-color:var(--accent);width:17px;height:17px}.check b{font-size:12px}.check span{display:block;font-size:10px;color:var(--muted)}.photo{border:1px dashed var(--border);border-radius:13px;padding:10px;display:flex;align-items:center;gap:10px;background:var(--surface2)}.photo img{width:48px;height:48px;border-radius:9px;object-fit:cover;display:none}.photo input{font-size:11px}.empty{padding:20px 8px;color:var(--muted);text-align:center;font-size:12px}.footer-note{font-size:10px;color:var(--muted);line-height:1.5;margin-top:14px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}}@media(max-width:580px){.wrap{padding:18px 12px 35px}header{align-items:flex-start}.date-pill{display:none}.stats{gap:6px}.stat{padding:10px 8px}.stat .num{font-size:17px}.form{grid-template-columns:1fr 1fr}.form .food-field{grid-column:1/-1}.ring{grid-template-columns:95px 1fr}.circle{width:92px;height:92px}.circle:after{width:67px;height:67px}}
+</style>
+</head>
+<body>
+<div class="app"><div class="wrap">
+<header><div class="brand"><div class="logo">🥗</div><div><h1>NutriLog</h1><div class="sub">Your everyday food, macros & meal library</div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><label style="font-size:10px;color:var(--muted);font-weight:650">LOGGING DAY</label><select id="daySelect" style="background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:9px 12px;font-size:13px;font-weight:650;outline:none"></select></div></header>
+<div class="stats" id="stats"></div>
+<section class="card" style="margin-bottom:18px"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px"><div><h2 style="margin-bottom:3px">Weekly nutrition history</h2><div style="font-size:11px;color:var(--muted)">Review your last 7 days and tap any day to edit its food log.</div></div><div style="font-size:11px;color:var(--muted);white-space:nowrap">2800 kcal · 150g+ P</div></div><div id="history"></div></section>
+<div class="grid"><main>
+<section class="card"><h2>Add food</h2><div class="tabs" id="tabs"></div>
+<div class="form">
+<div class="field food-field"><label>Food / brand</label><input id="foodSearch" list="foods" placeholder="e.g. pesarattu, Greek yogurt, chicken breast…"><datalist id="foods"></datalist></div>
+<div class="field"><label>Quantity</label><input id="qty" type="number" min="0" step="0.1" value="1"></div>
+<div class="field"><label>Unit</label><select id="unit"><option value="serving">serving</option><option value="g">grams</option><option value="oz">oz</option><option value="ml">ml</option><option value="cup">cup</option><option value="piece">piece</option></select></div>
+<div class="field full"><label>Brand / label (optional)</label><input id="brand" placeholder="e.g. Kirkland, Oikos, Optimum Nutrition"></div>
+<div class="field full"><label>Food photo (optional — saved with this entry)</label><div class="photo"><img id="photoPreview"><input id="photo" type="file" accept="image/*"></div></div>
+</div>
+<div class="food-suggest" id="suggestions"></div><div class="actions"><button class="btn primary" id="addBtn">＋ Add to <span id="mealBtn">Breakfast</span></button><button class="btn ghost" id="saveFoodBtn">Save as custom food</button></div></section>
+
+<div id="meals"></div>
+<section class="card" style="margin-top:18px"><h2>Saved meals</h2><div class="save-list" id="savedMeals"></div><div class="footer-note">Save your repeat combinations (for example your usual breakfast or coffee + oats). One tap adds the entire meal to today.</div></section>
+</main>
+<aside class="side-stack">
+<section class="card"><h2>Daily target</h2><div class="ring"><div class="circle" id="calRing" style="--pct:0"><div class="circle-inner"><b id="calNum">0</b><span>kcal</span></div></div><div><div class="goal-row"><span>Calories</span><b>2800</b></div><div class="goal-row"><span>Protein</span><b>150 g+</b></div><div class="goal-row"><span>Carbs</span><b>385 g</b></div><div class="goal-row"><span>Fat</span><b>68 g</b></div><div class="goal-row"><span>Fiber</span><b>40 g</b></div></div></div></section>
+<section class="card"><h2>Daily checklist</h2><div class="checks"><label class="check"><input type="checkbox" id="whey"><div><b>Whey protein</b><span>1 scoop</span></div></label><label class="check"><input type="checkbox" id="creatine"><div><b>Creatine</b><span>5 g</span></div></label></div></section>
+<section class="card"><h2>Quick add</h2><div class="quick"><button class="btn ghost" data-quick="Coffee — whole milk">☕ <strong>Whole-milk coffee</strong><span>8–12 oz</span></button><button class="btn ghost" data-quick="Whey protein — ON Gold Standard">🥛 <strong>Whey</strong><span>1 scoop</span></button><button class="btn ghost" data-quick="Cooked rice">🍚 <strong>Cooked rice</strong><span>1 cup</span></button><button class="btn ghost" data-quick="Greek yogurt">🥣 <strong>Greek yogurt</strong><span>1 cup</span></button></div></section>
+<section class="card"><h2>My saved foods</h2><div class="save-list" id="customFoods"></div></section>
+</aside></div>
+</div></div>
+<script>
+const baseFoods={
+"Pesarattu":{unit:"piece",qty:1,kcal:170,p:7,c:27,f:4,fi:4,sugar:2,sodium:220},
+"Dosa":{unit:"piece",qty:1,kcal:170,p:4,c:28,f:5,fi:1,sugar:1,sodium:220},
+"Idli":{unit:"piece",qty:2,kcal:120,p:4,c:25,f:1,fi:2,sugar:1,sodium:180},
+"Cooked toor dal":{unit:"cup",qty:1,kcal:220,p:15,c:36,f:1,fi:15,sugar:3,sodium:10},
+"Cooked green gram dal":{unit:"cup",qty:1,kcal:210,p:14,c:37,f:1,fi:15,sugar:4,sodium:8},
+"Chana curry":{unit:"cup",qty:1,kcal:270,p:14,c:42,f:6,fi:12,sugar:7,sodium:380},
+"Baked chana":{unit:"g",qty:100,kcal:364,p:19,c:61,f:6,fi:17,sugar:11,sodium:24},
+"Rajma curry":{unit:"cup",qty:1,kcal:250,p:15,c:40,f:4,fi:13,sugar:5,sodium:350},
+"Soya chunks cooked":{unit:"cup",qty:1,kcal:210,p:31,c:16,f:1,fi:9,sugar:4,sodium:15},
+"Paneer":{unit:"g",qty:100,kcal:265,p:18,c:6,f:20,fi:0,sugar:2,sodium:22},
+"Tofu":{unit:"g",qty:100,kcal:145,p:16,c:4,f:9,fi:2,sugar:1,sodium:15},
+"Chicken breast cooked":{unit:"g",qty:100,kcal:165,p:31,c:0,f:3.6,fi:0,sugar:0,sodium:74},
+"Tilapia cooked":{unit:"g",qty:100,kcal:128,p:26,c:0,f:2.7,fi:0,sugar:0,sodium:56},
+"Shrimp cooked":{unit:"g",qty:100,kcal:99,p:24,c:.2,f:.3,fi:0,sugar:0,sodium:111},
+"Egg":{unit:"piece",qty:1,kcal:72,p:6.3,c:.4,f:4.8,fi:0,sugar:.2,sodium:62},
+"Greek yogurt":{unit:"cup",qty:1,kcal:150,p:15,c:8,f:6,fi:0,sugar:6,sodium:60},
+"Curd":{unit:"cup",qty:1,kcal:150,p:8,c:11,f:8,fi:0,sugar:11,sodium:110},
+"Oats":{unit:"g",qty:40,kcal:152,p:5.1,c:27,f:2.8,fi:4,sugar:.4,sodium:2},
+"Cooked rice":{unit:"cup",qty:1,kcal:205,p:4.3,c:44.5,f:.4,fi:.6,sugar:.1,sodium:2},
+"Chapathi":{unit:"piece",qty:1,kcal:120,p:4,c:18,f:3,fi:3,sugar:1,sodium:160},
+"Jowar roti":{unit:"piece",qty:1,kcal:120,p:3,c:24,f:1.5,fi:2,sugar:0,sodium:5},
+"Ragi malt":{unit:"cup",qty:1,kcal:170,p:4,c:32,f:3,fi:3,sugar:6,sodium:40},
+"Avocado":{unit:"g",qty:100,kcal:160,p:2,c:8.5,f:14.7,fi:6.7,sugar:.7,sodium:7},
+"Peanut oil":{unit:"g",qty:10,kcal:90,p:0,c:0,f:10,fi:0,sugar:0,sodium:0},
+"Olive oil":{unit:"g",qty:10,kcal:90,p:0,c:0,f:10,fi:0,sugar:0,sodium:0},
+"Coffee — whole milk":{unit:"oz",qty:10,kcal:105,p:5.4,c:7.8,f:5.8,fi:0,sugar:7.8,sodium:67},
+"Whey protein — ON Gold Standard":{unit:"scoop",qty:1,kcal:120,p:24,c:3,f:1.5,fi:0,sugar:1,sodium:130},
+"Whole milk":{unit:"oz",qty:8,kcal:149,p:7.7,c:11.7,f:8,fi:0,sugar:12,sodium:105},
+"Sweet potato boiled":{unit:"g",qty:100,kcal:76,p:1.4,c:17.7,f:.1,fi:2.5,sugar:5.7,sodium:27},
+"Sweet corn":{unit:"g",qty:100,kcal:96,p:3.4,c:21,f:1.5,fi:2.4,sugar:4.5,sodium:1}
+};
+// Expanded common-food database. Values are approximate per listed portion and can be replaced with package-label data.
+Object.assign(baseFoods, {
+"Baked chana":{unit:"g",qty:100,kcal:364,p:19,c:61,f:6,fi:17,sugar:11,sodium:24},
+"Chickpeas cooked":{unit:"g",qty:100,kcal:164,p:8.9,c:27.4,f:2.6,fi:7.6,sugar:4.8,sodium:7},
+"Chana dal cooked":{unit:"cup",qty:1,kcal:237,p:14,c:39,f:4,fi:11,sugar:4,sodium:12},
+"Masoor dal cooked":{unit:"cup",qty:1,kcal:230,p:18,c:40,f:.8,fi:15,sugar:4,sodium:4},
+"Moong dal cooked":{unit:"cup",qty:1,kcal:212,p:14,c:39,f:.8,fi:15,sugar:4,sodium:4},
+"Urad dal cooked":{unit:"cup",qty:1,kcal:230,p:18,c:40,f:.9,fi:15,sugar:3,sodium:5},
+"Sambar":{unit:"cup",qty:1,kcal:140,p:7,c:21,f:4,fi:6,sugar:5,sodium:500},
+"Rasam":{unit:"cup",qty:1,kcal:60,p:2,c:10,f:2,fi:2,sugar:4,sodium:500},
+"Chole":{unit:"cup",qty:1,kcal:270,p:14,c:42,f:6,fi:12,sugar:7,sodium:380},
+"Dal makhani":{unit:"cup",qty:1,kcal:300,p:13,c:35,f:12,fi:9,sugar:4,sodium:500},
+"Palak paneer":{unit:"cup",qty:1,kcal:300,p:14,c:12,f:22,fi:4,sugar:4,sodium:500},
+"Butter chicken":{unit:"cup",qty:1,kcal:420,p:31,c:14,f:27,fi:2,sugar:6,sodium:700},
+"Chicken tikka":{unit:"g",qty:100,kcal:180,p:27,c:4,f:6,fi:0,sugar:1,sodium:450},
+"Tandoori chicken":{unit:"g",qty:100,kcal:190,p:28,c:2,f:7,fi:0,sugar:1,sodium:500},
+"Chicken curry":{unit:"cup",qty:1,kcal:330,p:30,c:12,f:18,fi:3,sugar:5,sodium:650},
+"Chicken biryani":{unit:"cup",qty:1,kcal:350,p:20,c:43,f:11,fi:2,sugar:2,sodium:600},
+"Vegetable biryani":{unit:"cup",qty:1,kcal:280,p:6,c:48,f:7,fi:5,sugar:4,sodium:450},
+"Samosa":{unit:"piece",qty:1,kcal:250,p:5,c:28,f:13,fi:3,sugar:2,sodium:300},
+"Vada":{unit:"piece",qty:1,kcal:140,p:4,c:16,f:7,fi:2,sugar:1,sodium:180},
+"Medu vada":{unit:"piece",qty:1,kcal:140,p:4,c:16,f:7,fi:2,sugar:1,sodium:180},
+"Upma":{unit:"cup",qty:1,kcal:220,p:6,c:34,f:7,fi:3,sugar:3,sodium:350},
+"Poha":{unit:"cup",qty:1,kcal:200,p:5,c:35,f:5,fi:3,sugar:3,sodium:350},
+"Pongal":{unit:"cup",qty:1,kcal:250,p:7,c:37,f:8,fi:4,sugar:1,sodium:300},
+"Appam":{unit:"piece",qty:1,kcal:120,p:2,c:23,f:2,fi:1,sugar:1,sodium:100},
+"Uttapam":{unit:"piece",qty:1,kcal:180,p:5,c:30,f:5,fi:2,sugar:2,sodium:250},
+"Pesarattu":{unit:"piece",qty:1,kcal:170,p:7,c:27,f:4,fi:4,sugar:2,sodium:220},
+"Paratha":{unit:"piece",qty:1,kcal:220,p:5,c:30,f:9,fi:3,sugar:2,sodium:300},
+"Aloo paratha":{unit:"piece",qty:1,kcal:260,p:6,c:38,f:9,fi:4,sugar:2,sodium:350},
+"Naan":{unit:"piece",qty:1,kcal:260,p:9,c:45,f:5,fi:2,sugar:3,sodium:500},
+"Roti":{unit:"piece",qty:1,kcal:100,p:3,c:18,f:2,fi:2,sugar:1,sodium:120},
+"Brown rice cooked":{unit:"cup",qty:1,kcal:216,p:5,c:45,f:1.8,fi:3.5,sugar:.7,sodium:10},
+"Quinoa cooked":{unit:"cup",qty:1,kcal:222,p:8,c:39,f:3.6,fi:5.2,sugar:1.6,sodium:13},
+"Couscous cooked":{unit:"cup",qty:1,kcal:176,p:6,c:36,f:.3,fi:2.2,sugar:0,sodium:8},
+"Pasta cooked":{unit:"cup",qty:1,kcal:220,p:8,c:43,f:1.3,fi:2.5,sugar:1.5,sodium:1},
+"Whole wheat pasta cooked":{unit:"cup",qty:1,kcal:174,p:7.5,c:37,f:.8,fi:6.3,sugar:1.1,sodium:4},
+"Bread whole wheat":{unit:"slice",qty:1,kcal:100,p:4,c:18,f:1.5,fi:3,sugar:2,sodium:160},
+"Bread white":{unit:"slice",qty:1,kcal:80,p:3,c:15,f:1,fi:.6,sugar:2,sodium:150},
+"Bagel":{unit:"piece",qty:1,kcal:270,p:10,c:53,f:1.5,fi:2,sugar:5,sodium:430},
+"Tortilla flour":{unit:"piece",qty:1,kcal:140,p:4,c:24,f:4,fi:2,sugar:1,sodium:350},
+"Chicken thigh cooked":{unit:"g",qty:100,kcal:209,p:26,c:0,f:11,fi:0,sugar:0,sodium:84},
+"Turkey breast cooked":{unit:"g",qty:100,kcal:135,p:29,c:0,f:1.8,fi:0,sugar:0,sodium:60},
+"Salmon cooked":{unit:"g",qty:100,kcal:206,p:22,c:0,f:12,fi:0,sugar:0,sodium:59},
+"Tuna canned in water":{unit:"g",qty:100,kcal:116,p:26,c:0,f:1,fi:0,sugar:0,sodium:320},
+"Cod cooked":{unit:"g",qty:100,kcal:105,p:23,c:0,f:.9,fi:0,sugar:0,sodium:78},
+"Catfish cooked":{unit:"g",qty:100,kcal:151,p:26,c:0,f:5,fi:0,sugar:0,sodium:63},
+"Sardines canned":{unit:"g",qty:100,kcal:208,p:25,c:0,f:11,fi:0,sugar:0,sodium:307},
+"Egg whites":{unit:"g",qty:100,kcal:52,p:10.9,c:.7,f:.2,fi:0,sugar:.7,sodium:166},
+"Egg whole":{unit:"piece",qty:1,kcal:72,p:6.3,c:.4,f:4.8,fi:0,sugar:.2,sodium:62},
+"Greek yogurt nonfat":{unit:"g",qty:100,kcal:59,p:10.3,c:3.6,f:.4,fi:0,sugar:3.2,sodium:36},
+"Greek yogurt whole milk":{unit:"g",qty:100,kcal:97,p:9,c:3.9,f:5,fi:0,sugar:3.6,sodium:36},
+"Cottage cheese":{unit:"cup",qty:1,kcal:206,p:28,c:8,f:9,fi:0,sugar:6,sodium:820},
+"Cheddar cheese":{unit:"g",qty:28,kcal:113,p:7,c:.4,f:9.3,fi:0,sugar:.1,sodium:185},
+"Mozzarella":{unit:"g",qty:28,kcal:85,p:6.3,c:.6,f:6.3,fi:0,sugar:.3,sodium:178},
+"Almond milk unsweetened":{unit:"cup",qty:1,kcal:30,p:1,c:1,f:2.5,fi:1,sugar:0,sodium:150},
+"Soy milk":{unit:"cup",qty:1,kcal:80,p:7,c:4,f:4,fi:2,sugar:1,sodium:90},
+"Whole milk":{unit:"cup",qty:1,kcal:149,p:7.7,c:11.7,f:8,fi:0,sugar:12,sodium:105},
+"Skim milk":{unit:"cup",qty:1,kcal:83,p:8.3,c:12.2,f:.2,fi:0,sugar:12.2,sodium:107},
+"Banana":{unit:"piece",qty:1,kcal:105,p:1.3,c:27,f:.4,fi:3.1,sugar:14.4,sodium:1},
+"Apple":{unit:"piece",qty:1,kcal:95,p:.5,c:25,f:.3,fi:4.4,sugar:19,sodium:2},
+"Orange":{unit:"piece",qty:1,kcal:62,p:1.2,c:15.4,f:.2,fi:3.1,sugar:12,sodium:0},
+"Mango":{unit:"g",qty:100,kcal:60,p:.8,c:15,f:.4,fi:1.6,sugar:13.7,sodium:1},
+"Blueberries":{unit:"g",qty:100,kcal:57,p:.7,c:14.5,f:.3,fi:2.4,sugar:10,sodium:1},
+"Strawberries":{unit:"g",qty:100,kcal:32,p:.7,c:7.7,f:.3,fi:2,sugar:4.9,sodium:1},
+"Grapes":{unit:"g",qty:100,kcal:69,p:.7,c:18.1,f:.2,fi:.9,sugar:15.5,sodium:2},
+"Pineapple":{unit:"g",qty:100,kcal:50,p:.5,c:13.1,f:.1,fi:1.4,sugar:9.9,sodium:1},
+"Watermelon":{unit:"g",qty:100,kcal:30,p:.6,c:7.6,f:.2,fi:.4,sugar:6.2,sodium:1},
+"Papaya":{unit:"g",qty:100,kcal:43,p:.5,c:10.8,f:.3,fi:1.7,sugar:7.8,sodium:8},
+"Dates":{unit:"g",qty:100,kcal:282,p:2.5,c:75,f:.4,fi:8,sugar:63,sodium:2},
+"Potato boiled":{unit:"g",qty:100,kcal:87,p:1.9,c:20.1,f:.1,fi:1.8,sugar:.9,sodium:4},
+"Sweet potato baked":{unit:"g",qty:100,kcal:90,p:2,c:20.7,f:.2,fi:3.3,sugar:6.5,sodium:36},
+"Broccoli":{unit:"g",qty:100,kcal:35,p:2.4,c:7.2,f:.4,fi:3.3,sugar:1.4,sodium:33},
+"Spinach cooked":{unit:"cup",qty:1,kcal:41,p:5.3,c:6.8,f:.5,fi:4.3,sugar:.5,sodium:126},
+"Carrot":{unit:"g",qty:100,kcal:41,p:.9,c:9.6,f:.2,fi:2.8,sugar:4.7,sodium:69},
+"Tomato":{unit:"g",qty:100,kcal:18,p:.9,c:3.9,f:.2,fi:1.2,sugar:2.6,sodium:5},
+"Onion":{unit:"g",qty:100,kcal:40,p:1.1,c:9.3,f:.1,fi:1.7,sugar:4.2,sodium:4},
+"Cucumber":{unit:"g",qty:100,kcal:15,p:.7,c:3.6,f:.1,fi:.5,sugar:1.7,sodium:2},
+"Bell pepper":{unit:"g",qty:100,kcal:31,p:1,c:6,f:.3,fi:2.1,sugar:4.2,sodium:4},
+"Cauliflower":{unit:"g",qty:100,kcal:25,p:1.9,c:5,f:.3,fi:2,sugar:1.9,sodium:30},
+"Green beans":{unit:"g",qty:100,kcal:31,p:1.8,c:7,f:.2,fi:2.7,sugar:3.3,sodium:6},
+"Peas cooked":{unit:"g",qty:100,kcal:84,p:5.4,c:15.6,f:.4,fi:5.5,sugar:5.7,sodium:3},
+"Lettuce":{unit:"g",qty:100,kcal:15,p:1.4,c:2.9,f:.2,fi:1.3,sugar:.8,sodium:28},
+"Mushrooms":{unit:"g",qty:100,kcal:22,p:3.1,c:3.3,f:.3,fi:1,sugar:2,sodium:5},
+"Almonds":{unit:"g",qty:28,kcal:164,p:6,c:6,f:14,fi:3.5,sugar:1.2,sodium:0},
+"Walnuts":{unit:"g",qty:28,kcal:185,p:4.3,c:3.9,f:18.5,fi:1.9,sugar:.7,sodium:1},
+"Cashews":{unit:"g",qty:28,kcal:157,p:5.2,c:8.6,f:12.4,fi:.9,sugar:1.7,sodium:3},
+"Pistachios":{unit:"g",qty:28,kcal:159,p:5.8,c:7.8,f:12.6,fi:2.9,sugar:2.2,sodium:0},
+"Peanuts":{unit:"g",qty:28,kcal:161,p:7.3,c:4.6,f:14,fi:2.4,sugar:1.2,sodium:5},
+"Chia seeds":{unit:"g",qty:28,kcal:138,p:4.7,c:12,f:8.7,fi:9.8,sugar:0,sodium:5},
+"Flax seeds":{unit:"g",qty:28,kcal:151,p:5.2,c:8.2,f:12,fi:7.8,sugar:.4,sodium:9},
+"Pumpkin seeds":{unit:"g",qty:28,kcal:158,p:8.6,c:3,f:13.7,fi:1.7,sugar:.4,sodium:5},
+"Peanut butter":{unit:"tbsp",qty:1,kcal:95,p:3.5,c:3.5,f:8,fi:1,sugar:1.5,sodium:75},
+"Almond butter":{unit:"tbsp",qty:1,kcal:98,p:3.4,c:3.4,f:8.9,fi:1.6,sugar:.7,sodium:1},
+"Hummus":{unit:"g",qty:100,kcal:166,p:8,c:14,f:10,fi:6,sugar:.3,sodium:379},
+"Olive oil":{unit:"g",qty:10,kcal:90,p:0,c:0,f:10,fi:0,sugar:0,sodium:0},
+"Avocado oil":{unit:"g",qty:10,kcal:90,p:0,c:0,f:10,fi:0,sugar:0,sodium:0},
+"Ghee":{unit:"g",qty:10,kcal:90,p:0,c:0,f:10,fi:0,sugar:0,sodium:0},
+"Butter":{unit:"g",qty:10,kcal:72,p:.1,c:0,f:8.1,fi:0,sugar:0,sodium:64},
+"Honey":{unit:"tbsp",qty:1,kcal:64,p:0,c:17.3,f:0,fi:0,sugar:17.2,sodium:1},
+"Maple syrup":{unit:"tbsp",qty:1,kcal:52,p:0,c:13.4,f:0,fi:0,sugar:12.1,sodium:2},
+"Dark chocolate":{unit:"g",qty:28,kcal:170,p:2,c:13,f:12,fi:3,sugar:7,sodium:5},
+"Protein bar":{unit:"piece",qty:1,kcal:200,p:20,c:20,f:7,fi:5,sugar:5,sodium:200},
+"Coffee black":{unit:"cup",qty:1,kcal:2,p:.3,c:0,f:0,fi:0,sugar:0,sodium:5},
+"Tea with milk":{unit:"cup",qty:1,kcal:60,p:3,c:6,f:2.5,fi:0,sugar:5,sodium:40},
+"Orange juice":{unit:"cup",qty:1,kcal:112,p:1.7,c:26,f:.5,fi:.5,sugar:21,sodium:2},
+"Apple juice":{unit:"cup",qty:1,kcal:114,p:.2,c:28,f:.3,fi:.2,sugar:24,sodium:10},
+"Coconut water":{unit:"cup",qty:1,kcal:46,p:2,c:9,f:.5,fi:2.6,sugar:6,sodium:252},
+"Protein shake":{unit:"serving",qty:1,kcal:150,p:25,c:8,f:3,fi:2,sugar:3,sodium:150},
+"Whey protein — ON Gold Standard":{unit:"scoop",qty:1,kcal:120,p:24,c:3,f:1.5,fi:0,sugar:1,sodium:130}
+});
+const mealNames=["Breakfast","Lunch","Dinner","Snacks"];
+const todayKey=new Date().toISOString().slice(0,10);
+let state=JSON.parse(localStorage.getItem('nutrilog_state')||'null')||{date:todayKey,entries:[],history:{},savedMeals:[],customFoods:{}};
+if(!state.history)state.history={};
+if(!state.savedMeals)state.savedMeals=[];
+if(!state.customFoods)state.customFoods={};
+if(state.date!==todayKey){state.history[state.date]=state.entries||[];state.date=todayKey;state.entries=state.history[todayKey]||[]}
+let currentMeal='Breakfast', photoData='';
+const allFoods=()=>({...baseFoods,...state.customFoods});
+const fmt=n=>Number(n||0).toFixed(1).replace('.0','');
+function pruneHistory(){let keep=[];for(let i=0;i<=7;i++){let d=new Date();d.setDate(d.getDate()-i);keep.push(d.toISOString().slice(0,10))}Object.keys(state.history).forEach(d=>{if(!keep.includes(d))delete state.history[d]})}
+function save(){state.history[state.date]=state.entries;pruneHistory();localStorage.setItem('nutrilog_state',JSON.stringify(state))}
+function dateLabel(d){return new Date(d+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}
+function dayOptions(){let out='';for(let i=0;i<=7;i++){let d=new Date();d.setDate(d.getDate()-i);let k=d.toISOString().slice(0,10);out+=`<option value="${k}">${i===0?'Today · ':''}${dateLabel(k)}</option>`}document.getElementById('daySelect').innerHTML=out;document.getElementById('daySelect').value=state.date}
+function switchDay(d){if(!d||d===state.date)return;state.history[state.date]=state.entries;state.date=d;state.entries=state.history[d]||[];save();render()}
+function dayTotals(d){let es=d===state.date?state.entries:(state.history[d]||[]);return es.reduce((a,e)=>{['kcal','p','c','f','fi','sugar'].forEach(k=>a[k]+=e[k]||0);return a},{kcal:0,p:0,c:0,f:0,fi:0,sugar:0})}
+function renderHistory(){let el=document.getElementById('history');let rows=[];for(let i=0;i<=7;i++){let d=new Date();d.setDate(d.getDate()-i);let k=d.toISOString().slice(0,10),t=dayTotals(k),pct=Math.min(100,t.kcal/2800*100),active=k===state.date;rows.push(`<button onclick="switchDay('${k}')" style="width:100%;text-align:left;border:1px solid ${active?'var(--accent)':'var(--border)'};background:${active?'var(--accent2)':'var(--surface)'};color:var(--text);border-radius:13px;padding:10px 12px;margin-top:7px;display:grid;grid-template-columns:92px 1fr auto;gap:10px;align-items:center"><div><b style="font-size:12px">${i===0?'Today':dateLabel(k)}</b><div style="font-size:10px;color:var(--muted);margin-top:2px">${i===0?'Current day':'Nutrition log'}</div></div><div><div style="font-size:11px;color:var(--muted);margin-bottom:5px">${Math.round(t.kcal)} / 2800 kcal · P ${Math.round(t.p)}g · C ${Math.round(t.c)}g · F ${Math.round(t.f)}g · Fiber ${Math.round(t.fi)}g</div><div class="progress"><i style="width:${pct}%"></i></div></div><div style="font-size:12px;font-weight:750">${Math.round(pct)}%</div></button>`)}el.innerHTML=rows.join('')}
+function foodMatch(name){let foods=allFoods(); if(foods[name])return [name,foods[name]];let k=Object.keys(foods).find(x=>x.toLowerCase()===name.trim().toLowerCase())||Object.keys(foods).find(x=>x.toLowerCase().includes(name.trim().toLowerCase()));return k?[k,foods[k]]:null}
+function calc(food,qty,unit){let f=food;let baseQty=f.qty||1;let multiplier=qty/baseQty;if(unit!==f.unit){if(unit==='g'&&f.unit==='oz')multiplier=(qty/28.35)/baseQty;if(unit==='oz'&&f.unit==='g')multiplier=(qty*28.35)/baseQty;if(unit==='ml'&&f.unit==='cup')multiplier=(qty/240)/baseQty;if(unit==='cup'&&f.unit==='ml')multiplier=(qty*240)/baseQty}return Object.fromEntries(['kcal','p','c','f','fi','sugar','sodium'].map(k=>[k,(f[k]||0)*multiplier]))}
+function renderTabs(){document.getElementById('tabs').innerHTML=mealNames.map(m=>`<button class="tab ${m===currentMeal?'active':''}" data-meal="${m}">${m}</button>`).join('');document.querySelectorAll('[data-meal]').forEach(b=>b.onclick=()=>{currentMeal=b.dataset.meal;renderTabs();document.getElementById('mealBtn').textContent=currentMeal})}
+function totals(){return state.entries.reduce((a,e)=>{['kcal','p','c','f','fi','sugar','sodium'].forEach(k=>a[k]+=e[k]||0);return a},{kcal:0,p:0,c:0,f:0,fi:0,sugar:0,sodium:0})}
+function renderStats(){let t=totals();let items=[['kcal',t.kcal,'kcal','cal'],['p',t.p,'protein',''],['c',t.c,'carbs',''],['f',t.f,'fat',''],['fi',t.fi,'fiber',''],['sugar',t.sugar,'sugar','']];document.getElementById('stats').innerHTML=items.map(x=>`<div class="stat ${x[3]}"><div class="num">${fmt(x[1])}${x[0]==='kcal'?'':'g'}</div><div class="lbl">${x[2]}</div></div>`).join('');let pct=Math.min(100,t.kcal/2800*100);document.getElementById('calRing').style.setProperty('--pct',pct);document.getElementById('calNum').textContent=Math.round(t.kcal)}
+function renderMeals(){let el=document.getElementById('meals');el.innerHTML=mealNames.map(m=>{let es=state.entries.filter(e=>e.meal===m);let tt=es.reduce((a,e)=>a+e.kcal,0);return `<section class="meal-block"><div class="meal-head"><h3>${m}</h3><span class="meal-total">${Math.round(tt)} kcal</span></div><div class="card">${es.length?es.map(e=>`<div class="entry"><div><div class="entry-title">${e.name}${e.brand?` · ${e.brand}`:''}</div><div class="entry-meta">${fmt(e.qty)} ${e.unit}${e.photo?' · 📷':''}</div><div class="macroline">${Math.round(e.kcal)} kcal · P ${fmt(e.p)} · C ${fmt(e.c)} · F ${fmt(e.f)} · Fiber ${fmt(e.fi)}g · Sugar ${fmt(e.sugar)}g</div></div><button class="remove" data-remove="${e.id}">×</button></div>`).join(''):`<div class="empty">Nothing logged yet.</div>`}</div></section>`}).join('');document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{state.entries=state.entries.filter(e=>e.id!==b.dataset.remove);save();render()})}
+function renderSaved(){document.getElementById('savedMeals').innerHTML=state.savedMeals.length?state.savedMeals.map((m,i)=>`<div class="saved"><div><b>${m.name}</b><small>${m.items.length} foods · ${Math.round(m.kcal)} kcal</small></div><div class="tiny-actions"><button class="tiny" data-load="${i}">Add</button><button class="tiny" data-delmeal="${i}">×</button></div></div>`).join(''):`<div class="empty">Save a repeat breakfast, lunch, dinner or snack combo here.</div>`;document.querySelectorAll('[data-load]').forEach(b=>b.onclick=()=>{let m=state.savedMeals[b.dataset.load];m.items.forEach(x=>state.entries.push({...x,id:crypto.randomUUID()}));save();render()});document.querySelectorAll('[data-delmeal]').forEach(b=>b.onclick=()=>{state.savedMeals.splice(+b.dataset.delmeal,1);save();render()})}
+function renderCustom(){let c=Object.keys(state.customFoods);document.getElementById('customFoods').innerHTML=c.length?c.map(k=>`<div class="saved"><div><b>${k}</b><small>${state.customFoods[k].kcal} kcal / ${state.customFoods[k].qty} ${state.customFoods[k].unit}</small></div></div>`).join(''):`<div class="empty">Your saved custom foods will appear here.</div>`}
+function render(){dayOptions();renderTabs();renderStats();renderHistory();renderMeals();renderSaved();renderCustom();let foods=allFoods();document.getElementById('foods').innerHTML=Object.keys(foods).sort().map(x=>`<option value="${x}">`).join('');document.getElementById('suggestions').innerHTML=['Pesarattu','Dosa','Idli','Cooked toor dal','Chana curry','Chicken breast cooked','Tilapia cooked','Egg','Greek yogurt','Coffee — whole milk','Whey protein — ON Gold Standard'].map(x=>`<button class="chip" data-pick="${x}">${x}</button>`).join('');document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>pick(b.dataset.pick));}
+function pick(name){let f=allFoods()[name];document.getElementById('foodSearch').value=name;document.getElementById('qty').value=f.qty;document.getElementById('unit').value=f.unit}
+document.getElementById('addBtn').onclick=()=>{let match=foodMatch(document.getElementById('foodSearch').value);if(!match){alert('Choose a food from the list or save it as a custom food first.');return}let [name,f]=match,qty=+document.getElementById('qty').value||1,unit=document.getElementById('unit').value,c=calc(f,qty,unit);state.entries.push({id:crypto.randomUUID(),name,qty,unit,brand:document.getElementById('brand').value.trim(),meal:currentMeal,photo:photoData,...c});save();clearForm();render()};
+document.getElementById('saveFoodBtn').onclick=()=>{let name=document.getElementById('foodSearch').value.trim();if(!name){alert('Enter a food name first.');return}let qty=+document.getElementById('qty').value||1,unit=document.getElementById('unit').value,kcal=prompt('Calories for this portion?', '100');if(kcal===null)return;let p=prompt('Protein (g)?','0')||0,c=prompt('Carbs (g)?','0')||0,f=prompt('Fat (g)?','0')||0,fi=prompt('Fiber (g)?','0')||0,sugar=prompt('Sugar (g)?','0')||0,sodium=prompt('Sodium (mg)?','0')||0;state.customFoods[name]={unit,qty,kcal:+kcal,p:+p,c:+c,f:+f,fi:+fi,sugar:+sugar,sodium:+sodium};save();render();pick(name)};
+function clearForm(){document.getElementById('foodSearch').value='';document.getElementById('brand').value='';document.getElementById('qty').value=1;photoData='';document.getElementById('photo').value='';document.getElementById('photoPreview').style.display='none'}
+document.getElementById('foodSearch').addEventListener('change',()=>{let m=foodMatch(document.getElementById('foodSearch').value);if(m){document.getElementById('qty').value=m[1].qty;document.getElementById('unit').value=m[1].unit}});
+document.getElementById('photo').onchange=e=>{let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{photoData=r.result;let img=document.getElementById('photoPreview');img.src=photoData;img.style.display='block'};r.readAsDataURL(file)};
+document.getElementById('daySelect').onchange=e=>switchDay(e.target.value);
+document.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>{let name=b.dataset.quick;pick(name);currentMeal='Breakfast';renderTabs();document.getElementById('mealBtn').textContent=currentMeal;document.getElementById('addBtn').click()});
+['whey','creatine'].forEach(id=>{let x=localStorage.getItem('nutrilog_'+id);document.getElementById(id).checked=x==='1';document.getElementById(id).onchange=e=>localStorage.setItem('nutrilog_'+id,e.target.checked?'1':'0')});
+render();
+</script></body></html>
